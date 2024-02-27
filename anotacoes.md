@@ -49,3 +49,18 @@ test('Deve renderizar a rota de Cartões', () => {
 })
 
 ````
+
+
+## userEvent
+
+Abaixo temos teste de seleção do componente, de digitação no campo e de click no botão
+
+````js
+const select = screen.getAllByRole('combobox')
+const campoValor = screen.getByPlaceholderText('Digite um valor')
+const botao = screen.getByRole('button')
+
+userEvent.selectOptions(select, ['Depósito'])
+userEvent.type(campoValor, '100')
+userEvent.click(botao)
+````
