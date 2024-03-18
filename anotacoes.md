@@ -64,3 +64,60 @@ userEvent.selectOptions(select, ['Depósito'])
 userEvent.type(campoValor, '100')
 userEvent.click(botao)
 ````
+
+
+## Testes de integração
+
+Quando falamos em Testes de Integração, devemos ter em mente o objetivo por trás de realizar tal tipo de teste. De forma geral, os testes de integração testam duas ou mais unidades de código para garantir que não exista nenhuma quebra daquilo que já foi testado anteriormente. Devido a isso, é recomendado que os testes de integração sejam feitos após os testes de unidades, para compreender se essas unidades trabalham bem juntas.
+
+Por exemplo, imagine que você trabalha em um site de E-commerce, e precisa testar como a parte da aplicação do cliente (Front-end) se comunica e interage com a parte da aplicação do servidor (Backend). A parte do cliente se comunica de um jeito e a do servidor, um banco de dados por exemplo, se comunica de outra forma totalmente diferente. Então depois de escrever testes para as partes separadas, você poderia criar um teste de integração para verificar como essas duas partes trabalham em conjunto. Em aplicações Front-End, testes de unidade e testes de integração são muito semelhantes, a diferença é que nos testes de integração podemos testar fluxos bem maiores, como páginas, por exemplo.
+
+Observando apenas o lado do Front-end, podemos escrever testes de integração para nossas aplicações, principalmente no React. No React, onde cada componente é uma função, ou seja, uma unidade, podemos escrever testes que avaliem como eles interagem uns com os outros.
+
+Por exemplo, ainda imaginando o site de E-commerce, você poderia testar se ao adicionar um produto a lista de compras, esse produto realmente poderá ser visto e acessado por lá. E se você imaginar que a lista de compras pode ser acessada em uma outra página, por exemplo, você também conseguiria testar a integração entre as rotas de sua aplicação. Pois, ao adicionar um produto a lista de compras espera-se que ele possa ser acessado nesta rota. Mesma coisa você poderia imaginar se fosse o carrinho da seção de finalizar a compra.
+
+Para que você continue estudando e mergulhando mais fundos nos testes, eu vou deixar aqui embaixo um link de um repositório incrível com 50 melhores práticas de testes com JavaScript.
+
+https://github.com/goldbergyoni/javascript-testing-best-practices/blob/master/readme-pt-br.md
+
+- No teste abaixo simulamos o click do botão e se ao clicar renderizou um dos componentes que existe na página que navegamos.
+- Usamos o async await na função que roda o test, pois a consulta que está sendo realizada utilizando a query findByText() aguarda o elemento aparecer na tela. Só que ao utilizá-la é preciso tornar o teste assíncrono e aguardar o elemento aparecer no dom. Faz-se isso utilizando o async e o await.
+
+
+````js
+test('Deve navegar até a página correspondente ao link clicado', async () => {
+        render(<AppRoutes/>, { wrapper: BrowserRouter })
+
+        const linkPaginaCartoes = screen.getByText('Cartões')
+        expect(linkPaginaCartoes).toBeInTheDocument()
+
+        userEvent.click(linkPaginaCartoes)
+
+        const tituloPaginaCartoes = await screen.findByText('Meus cartões')
+        expect(tituloPaginaCartoes).toBeInTheDocument()
+})
+````
+
+## Hooks do Jest
+
+Sabia que o Jest também tem seus próprios hooks? É isso mesmo! Esses hooks, ou ganchos, são funções que executam um trecho de qualquer código em certa etapa do “ciclo de vida” dos testes. Você pode imaginar que um ciclo de vida é basicamente um determinado momento antes ou depois da execução do seu teste.
+
+Esses hooks servem perfeitamente quando precisamos limpar algum dado que tenhamos criado ao iniciar um teste, ou executar alguma tarefa ou configuração repetitiva. Vamos conhecer alguns deles?
+
+beforeAll : Serve para executar algo antes da execução de todos os testes;
+beforeEach: Serve para executar algo antes da execução de cada um dos testes iniciar;
+afterAll: Serve para executar algo após a finalização de todos os testes;
+afterEach: Serve para executar algo após a finalização de cada um dos testes.
+Cada um desses hooks deve ser executado recebendo uma função de callback, ou seja:
+
+beforeAll(() => {}); // antes de todos os testes;
+beforeEach(() => {}); // antes de cada um dos testes
+afterAll(() => {}); // depois de finalizar todos os testes
+afterEachAll(() => {}); // depois de finalizar cada um dos testesCOPIAR CÓDIGO
+Em nossa aplicação, poderíamos usar o beforeEach para limpar o mock de chamada a api antes de cada teste, dessa forma:
+
+beforeEach(() => {
+    api.get.mockClear();
+  });
+
+os hooks não podem ser chamados dentro de um test, sempre se lembre de chamá-los fora! 
