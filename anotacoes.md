@@ -121,3 +121,42 @@ beforeEach(() => {
   });
 
 os hooks não podem ser chamados dentro de um test, sempre se lembre de chamá-los fora! 
+
+
+## Hooks do React`
+
+Render hook é uma função da testing-library que utilizamos para rodar hooks do react nos nossos test, pois ele normalmente reotrnam erros se não são chamados dentro de componentes react. De dentro da função renderHook podemos desestruturar um "result" ele possuí o estado atual ao chamarmos o atributo "current", ficando da maneira abaixo.
+
+````js
+test('Hooks', () => {
+    const { result } = renderHook(() => {
+        const [nome, setNome] = useState('')
+
+        useEffect(() => {
+          setNome('Alice')
+        }, [])
+        
+        return nome;
+    })
+
+    expect(result.current).toBe('Alice')
+})
+````
+
+
+
+## Podemos utilizar essa função para testar hooks do React
+
+````js
+test('hooks/useCounter', () => {
+  const { result } = renderHook(() => useCounter());
+
+  expect(result.current.count).toBe(0);
+
+  act(() => {
+    result.current.increment();
+  });
+
+  expect(result.current.count).toBe(1);
+});
+````
