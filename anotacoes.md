@@ -160,3 +160,33 @@ test('hooks/useCounter', () => {
   expect(result.current.count).toBe(1);
 });
 ````
+
+## Falsos positivos
+
+Dizemos que um código está coberto por testes quando ao executarmos os nossos testes suas linhas são executadas. Mas não se engane, mesmo que um código possua 100% de cobertura de testes isso não significa que ele está 100% testado.
+
+É muito fácil gerar o que chamamos de falsos positivos enquanto testamos nosso software. Por exemplo, podemos ter um arquivo onde uma funçãoA utiliza uma funçãoB internamente, porém só a função A é exportada e testada
+
+````js
+//falsoPositivo.js
+const funcaoB () {
+    // executa algo
+}
+
+const funcaoA () {
+    funcaoB()
+    return 'texto qualquer'
+}
+
+export default funcaoA
+````
+
+````js
+//falsoPositivo.test.js
+test('retorna um texto qualquer', () => {
+   expect(funcaA()).toEqual(expect.any(String))
+}
+````
+Se rodarmos os testes veremos que o relatório de cobertura nos mostra que o arquivo falsoPositivo.js foi testado 100%, mas na verdade só estamos testando a funcaoA e claramente não testamos nada sobre a funcaoB, não temos nenhum testes para garantir que ela funciona como deveria ou até um teste para verificar se ela foi chamada.
+
+Então não se deixe enganar por relatórios de cobertura de teste. O que você como pessoa desenvolvedora deve fazer é garantir que seus testes se assemelhe o máximo possível com a forma que seu software ou aplicação será utilizado. Beleza?
